@@ -1,0 +1,38 @@
+name: Automated Pipeline Test Simulation
+
+# 1. Trigger the action every time code is pushed to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-pipeline-environment:
+    # 2. Tell GitHub to spin up a fresh Ubuntu Linux server in the cloud
+    runs-on: ubuntu-latest
+
+    steps:
+    # 3. Download your repository code onto that server
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    # 4. Set up Python on the cloud machine
+    - name: Set up Python Environment
+      uses: actions/setup-python@v5
+      with:
+        python-level: '3.10'
+
+    # 5. Automatically install the required libraries (like transformers)
+    - name: Install Engineering Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install torch transformers scikit-learn
+
+    # 6. Execute a quick verification check to ensure the AI libraries load properly
+    - name: Run Core Model Integrity Check
+      run: |
+        python -c "
+        from transformers import pipeline
+        print('Success: AI Deep Learning libraries initialized perfectly on the cloud machine!')
+        "
